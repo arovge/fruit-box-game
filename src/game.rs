@@ -23,8 +23,7 @@ impl Plugin for GamePlugin {
                 Update,
                 ((update_cells, update_score).chain(), update_timer)
                     .run_if(in_state(GameState::Playing)),
-            )
-            .add_systems(OnExit(GameState::Playing), tear_down);
+            );
     }
 }
 
@@ -94,6 +93,7 @@ fn setup(
             let cell_y = (y as f32 * SCALE as f32) - (HEIGHT as f32 / 2.) + (SCALE as f32 / 2.);
             commands
                 .spawn((
+                    DespawnOnExit(GameState::Playing),
                     cell.clone(),
                     Mesh2d(meshes.add(square)),
                     MeshMaterial2d(cell_color.clone()),
@@ -114,6 +114,7 @@ fn setup(
     }
 
     commands.spawn((
+        DespawnOnExit(GameState::Playing),
         ScoreText,
         Text::new("Score: 0"),
         TextColor(Color::WHITE),
@@ -134,6 +135,7 @@ fn setup(
     ));
 
     commands.spawn((
+        DespawnOnExit(GameState::Playing),
         CountdownTimer(Timer::from_seconds(GAME_DURATION_SECS, TimerMode::Once)),
         Text::new(format_duration(Duration::from_secs_f32(GAME_DURATION_SECS))),
         TextColor(Color::WHITE),
@@ -153,19 +155,6 @@ fn setup(
         },
     ));
     commands.init_resource::<DragState>();
-}
-
-fn tear_down(
-    mut commands: Commands,
-    cell_entities: Query<Entity, With<Cell>>,
-    score_text: Single<Entity, With<ScoreText>>,
-    countdown_timer: Single<Entity, With<CountdownTimer>>,
-) {
-    for entity in cell_entities.iter() {
-        commands.entity(entity).despawn();
-    }
-    commands.entity(*score_text).despawn();
-    commands.entity(*countdown_timer).despawn();
 }
 
 fn drag_start(

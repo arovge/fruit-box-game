@@ -5,17 +5,13 @@ pub struct MenuPlugin;
 
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::MainMenu), setup)
-            .add_systems(OnExit(GameState::MainMenu), tear_down);
+        app.add_systems(OnEnter(GameState::MainMenu), setup);
     }
 }
 
-#[derive(Component)]
-struct Menu;
-
 fn setup(mut commands: Commands) {
     commands.spawn((
-        Menu,
+        DespawnOnExit(GameState::MainMenu),
         Node {
             display: Display::Flex,
             justify_content: JustifyContent::Center,
@@ -65,8 +61,4 @@ fn setup(mut commands: Commands) {
             }),
         )),
     ));
-}
-
-fn tear_down(mut commands: Commands, text: Single<Entity, With<Menu>>) {
-    commands.entity(*text).despawn();
 }

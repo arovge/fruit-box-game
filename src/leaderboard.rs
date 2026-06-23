@@ -5,8 +5,7 @@ pub struct LeaderboardPlugin;
 
 impl Plugin for LeaderboardPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Leaderboard), setup)
-            .add_systems(OnExit(GameState::Leaderboard), tear_down);
+        app.add_systems(OnEnter(GameState::Leaderboard), setup);
     }
 }
 
@@ -15,9 +14,6 @@ pub struct Score {
     pub id: usize,
     pub score: usize,
 }
-
-#[derive(Component)]
-struct Leaderboard;
 
 fn setup(mut commands: Commands, scores: Query<&Score>) {
     let new_score = *scores.iter().max_by_key(|s| s.id).unwrap();
@@ -29,7 +25,7 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
     let is_new_score_top_score = top_scores.contains(&new_score);
 
     commands.spawn((
-        Leaderboard,
+        DespawnOnExit(GameState::Leaderboard),
         Node {
             display: Display::Flex,
             justify_content: JustifyContent::Center,
@@ -105,8 +101,4 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
             }),
         )),
     ));
-}
-
-fn tear_down(mut commands: Commands, leaderboard: Single<Entity, With<Leaderboard>>) {
-    commands.entity(*leaderboard).despawn();
 }
