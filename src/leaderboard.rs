@@ -1,5 +1,6 @@
 use crate::state::*;
-use bevy::{color::palettes::tailwind::YELLOW_400, ecs::spawn::SpawnWith, prelude::*};
+use crate::ui::*;
+use bevy::{color::palettes::tailwind::YELLOW_400, prelude::*};
 
 pub struct LeaderboardPlugin;
 
@@ -23,9 +24,24 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
         top_scores.into_iter().take(5).collect()
     };
     let is_new_score_top_score = top_scores.contains(&new_score);
+    let display_scores = {
+        let mut top_scores = top_scores
+            .iter()
+            .enumerate()
+            .map(|(index, score)| {
+                let rank = index + 1;
+                row(format!("{rank}\t{}", score.score), score == &new_score)
+            })
+            .collect::<Vec<_>>();
+        if !is_new_score_top_score {
+            top_scores.push(row(format!("Score\t{}", new_score.score), true))
+        }
+        top_scores
+    };
 
-    commands.spawn((
-        DespawnOnExit(GameState::Leaderboard),
+    commands.spawn_scene(bsn! {
+        #Leaderboard
+        DespawnOnExit::<GameState>(GameState::Leaderboard)
         Node {
             display: Display::Flex,
             justify_content: JustifyContent::Center,
@@ -34,71 +50,24 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
             row_gap: Val::Px(50.),
             height: Val::Percent(100.),
             width: Val::Percent(100.),
-            ..default()
-        },
-        Children::spawn((
-            Spawn((
-                Text::new("Leaderboard"),
-                TextFont {
-                    font_size: FontSize::Px(56.),
-                    ..default()
-                },
-            )),
-            Spawn((
-                Text::new("Rank\tScore"),
-                TextFont {
-                    font_size: FontSize::Px(32.),
-                    ..default()
-                },
-            )),
-            SpawnWith(move |parent: &mut ChildSpawner| {
-                for (index, top_score) in top_scores.iter().enumerate() {
-                    let text_color = if top_score == &new_score {
-                        Color::from(YELLOW_400)
-                    } else {
-                        Color::WHITE
-                    };
-                    let rank = index + 1;
-                    parent.spawn((
-                        Text::new(format!("{rank}\t{}", top_score.score)),
-                        TextColor(text_color),
-                        TextFont {
-                            font_size: FontSize::Px(32.),
-                            ..default()
-                        },
-                    ));
-                }
-                if !is_new_score_top_score {
-                    parent.spawn((
-                        Text::new(format!("Score\t{}", new_score.score)),
-                        TextColor(Color::from(YELLOW_400)),
-                        TextFont {
-                            font_size: FontSize::Px(32.),
-                            ..default()
-                        },
-                    ));
-                }
-                parent
-                    .spawn((
-                        Text::new("Play"),
-                        TextColor(Color::BLACK),
-                        TextFont {
-                            font_size: FontSize::Px(48.),
-                            ..default()
-                        },
-                        TextLayout {
-                            justify: Justify::Center,
-                            ..default()
-                        },
-                        Node {
-                            padding: UiRect::horizontal(Val::Px(100.)),
-                            border_radius: BorderRadius::all(Val::Px(12.)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::WHITE),
-                    ))
-                    .observe(play);
-            }),
-        )),
-    ));
+        }
+        Children [
+            title("Leaderboard"),
+            title3("Rank\tScore"),
+            {display_scores},
+            play_button()
+        ]
+    });
+}
+
+fn row(text: impl Into<String>, is_highlighted: bool) -> impl Scene {
+    let text_color = if is_highlighted {
+        Color::from(YELLOW_400)
+    } else {
+        Color::WHITE
+    };
+    bsn! {
+        title3(text)
+        TextColor(text_color)
+    }
 }

@@ -7,6 +7,7 @@ mod game;
 mod leaderboard;
 mod menu;
 mod state;
+mod ui;
 
 fn main() {
     App::new()

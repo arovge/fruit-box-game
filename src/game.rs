@@ -6,7 +6,7 @@ use bevy::{
 };
 use std::time::Duration;
 
-const GAME_DURATION_SECS: f32 = 120.;
+const GAME_DURATION_SECS: f32 = 10.; //120.;
 const TARGET_SUM: usize = 10;
 const ROWS: usize = 10;
 const COLS: usize = 17;
