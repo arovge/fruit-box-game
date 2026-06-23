@@ -102,7 +102,7 @@ fn setup(
                         Text2d(cell.clone().value.to_string()),
                         TextColor(text_color),
                         TextFont {
-                            font_size: 32.,
+                            font_size: FontSize::Px(32.),
                             ..default()
                         },
                     )],
@@ -118,7 +118,7 @@ fn setup(
         Text::new("Score: 0"),
         TextColor(Color::WHITE),
         TextFont {
-            font_size: 32.,
+            font_size: FontSize::Px(32.),
             ..default()
         },
         TextLayout {
@@ -138,7 +138,7 @@ fn setup(
         Text::new(format_duration(Duration::from_secs_f32(GAME_DURATION_SECS))),
         TextColor(Color::WHITE),
         TextFont {
-            font_size: 32.,
+            font_size: FontSize::Px(32.),
             ..default()
         },
         TextLayout {

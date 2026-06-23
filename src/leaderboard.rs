@@ -44,14 +44,14 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
             Spawn((
                 Text::new("Leaderboard"),
                 TextFont {
-                    font_size: 56.,
+                    font_size: FontSize::Px(56.),
                     ..default()
                 },
             )),
             Spawn((
                 Text::new("Rank\tScore"),
                 TextFont {
-                    font_size: 32.,
+                    font_size: FontSize::Px(32.),
                     ..default()
                 },
             )),
@@ -67,7 +67,7 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
                         Text::new(format!("{rank}\t{}", top_score.score)),
                         TextColor(text_color),
                         TextFont {
-                            font_size: 32.,
+                            font_size: FontSize::Px(32.),
                             ..default()
                         },
                     ));
@@ -77,7 +77,7 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
                         Text::new(format!("Score\t{}", new_score.score)),
                         TextColor(Color::from(YELLOW_400)),
                         TextFont {
-                            font_size: 32.,
+                            font_size: FontSize::Px(32.),
                             ..default()
                         },
                     ));
@@ -87,7 +87,7 @@ fn setup(mut commands: Commands, scores: Query<&Score>) {
                         Text::new("Play"),
                         TextColor(Color::BLACK),
                         TextFont {
-                            font_size: 48.,
+                            font_size: FontSize::Px(48.),
                             ..default()
                         },
                         TextLayout {

@@ -30,14 +30,14 @@ fn setup(mut commands: Commands) {
             Spawn((
                 Text::new("MDR Simulator"),
                 TextFont {
-                    font_size: 56.,
+                    font_size: FontSize::Px(56.),
                     ..default()
                 },
             )),
             Spawn((
                 Text::new("Welcome Refiner"),
                 TextFont {
-                    font_size: 48.,
+                    font_size: FontSize::Px(48.),
                     ..default()
                 },
             )),
@@ -47,7 +47,7 @@ fn setup(mut commands: Commands) {
                         Text::new("Play"),
                         TextColor(Color::BLACK),
                         TextFont {
-                            font_size: 48.,
+                            font_size: FontSize::Px(48.),
                             ..default()
                         },
                         TextLayout {
